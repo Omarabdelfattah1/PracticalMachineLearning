@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1583163895594.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BBB53DDD",
+    "lastKnownWriteTime" : 1583151913,
+    "last_content_update" : 1583151913,
+    "path" : "C:/Users/Omar/Downloads/Compressed/Practical-Machine-Learning-Project-master/project/Practical-Machine-learning-project/pmlHTMLknit.Rmd",
+    "project_path" : "Practical-Machine-learning-project/pmlHTMLknit.Rmd",
+    "properties" : {
+        "cursorPosition" : "92,14",
+        "scrollLine" : "78"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

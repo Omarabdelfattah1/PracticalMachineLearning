@@ -1,0 +1,103 @@
+---
+title: "Prediction Assignment Writeup"
+author: "Omar Abdelfattah"
+date: "3/2/2020"
+output: html_document
+---
+
+# Description
+
+we used data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict the manner in which they did the exercise.  
+
+# Packages used 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(caret)
+library(rpart)
+library(corrplot)
+library(rpart.plot)
+library(rattle)
+library(knitr)
+library(randomForest)
+library(RColorBrewer)
+library(e1071)
+```
+
+Reading and testing the data.
+```{r}
+
+training <- read.csv("./pml-training.csv",sep = ",", na.strings = c("", "NA"))
+testing <- read.csv("./pml-testing.csv",sep = ",", na.strings = c("", "NA"))
+
+dim(training)
+dim(testing)
+```
+
+### Cleaning the data
+We remove NAs and columns that are useless.
+```{r, cache = T}
+sum(complete.cases(training))
+
+training <- training[, colSums(is.na(training)) == 0] 
+testing <- testing[, colSums(is.na(testing)) == 0] 
+
+classe <- training$classe
+trainRemove <- grepl("^X|timestamp|window", names(training))
+training <- training[, !trainRemove]
+trainCleaned <- training[, sapply(training, is.numeric)]
+trainCleaned$classe <- classe
+testRemove <- grepl("^X|timestamp|window", names(testing))
+testing <- testing[, !testRemove]
+testCleaned <- testing[, sapply(testing, is.numeric)]
+```
+
+#### Data Slicing
+
+70% for training and 30% for testing...
+
+```{r, cache = T}
+Train <- createDataPartition(trainCleaned$classe, p=0.70, list=F)
+trainData <- trainCleaned[Train, ]
+testData <- trainCleaned[-Train, ]
+```
+
+#### Data Modeling
+
+```{r, cache = T}
+control <- trainControl(method="cv", 5)
+model <- train(classe ~ ., data=trainData, method="rf", trControl=control, ntree=250)
+
+model
+```
+  
+```{r, cache = T}
+predictRf <- predict(model, testData)
+confusionMatrix(testData$classe, predictRf)
+```
+```{r, cache = T}
+accuracy <- postResample(predictRf, testData$classe)
+accuracy
+oose <- 1 - as.numeric(confusionMatrix(testData$classe, predictRf)$overall[1])
+oose
+```
+
+#### Testing 
+
+```{r, cache = T}
+testing <- predict(model, testCleaned[, -length(names(testCleaned))])
+testing
+
+```
+
+#### Figures
+
+Correlation Matrix
+
+```{r, cache = T}
+corrPlot <- cor(trainData[, -length(names(trainData))])
+corrplot(corrPlot, method="color")
+```
+
+
+
+
